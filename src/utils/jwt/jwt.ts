@@ -35,7 +35,7 @@ export class JwtService {
     const data = this.verify(token);
     return z
       .object({
-        userId: z.string(),
+        userId: z.string().uuid(),
         role: z.enum(roles),
       })
       .parse(data);

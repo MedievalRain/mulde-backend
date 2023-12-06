@@ -1,17 +1,17 @@
 import { ApiError } from "../../errors/ApiError";
 import { UserCredentials } from "../../types";
-import { InviteRepository } from "./inviteRepository";
-import { parseCreateInviteRequest } from "./inviteValidation";
+import { AdminRepository } from "./adminRepository";
+import { parseCreateInviteRequest } from "./adminValidation";
 
-class InviteService {
-  constructor(private inviteRepository: InviteRepository) {}
+class AdminService {
+  constructor(private adminRepository: AdminRepository) {}
 
   public async createInvite(data: unknown, credentials: UserCredentials | undefined) {
     if (!credentials) throw ApiError.InvalidJWT();
     if (credentials.role !== "admin") throw ApiError.InsufficientPrivileges();
     const { name } = parseCreateInviteRequest(data);
-    return this.inviteRepository.createInvite(name);
+    return this.adminRepository.createInvite(name);
   }
 }
 
-export const inviteService = new InviteService(new InviteRepository());
+export const adminService = new AdminService(new AdminRepository());

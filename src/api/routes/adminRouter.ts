@@ -16,5 +16,15 @@ adminRouter.post("/invite/create", async (req: AuthRequest, res, next) => {
     next(error);
   }
 });
+adminRouter.delete("/user", async (req: AuthRequest, res, next) => {
+  try {
+    await adminService.deleteUser(req.query, req.credentials);
+    res.status(200).json({
+      message: "User deleted",
+    });
+  } catch (error) {
+    next(error);
+  }
+});
 
 export { adminRouter };

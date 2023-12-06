@@ -1,12 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import { ApiError } from "../errors/ApiError";
 
-export const errorMiddleware = (
-  err: Error,
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const errorMiddleware = (err: unknown, req: Request, res: Response, next: NextFunction) => {
   if (err instanceof ApiError) {
     return res.status(err.status).json({
       error: err.type,

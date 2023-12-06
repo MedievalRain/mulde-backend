@@ -13,3 +13,17 @@ export const parseAuthRequest = (data: unknown) => {
     throw ApiError.Validation();
   }
 };
+
+const registerRequestSchema = z.object({
+  email: z.string().email().min(3),
+  password: z.string().min(8),
+  inviteId: z.string().uuid(),
+});
+
+export const parseRegisterRequest = (data: unknown) => {
+  try {
+    return registerRequestSchema.parse(data);
+  } catch {
+    throw ApiError.Validation();
+  }
+};

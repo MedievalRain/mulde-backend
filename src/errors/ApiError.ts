@@ -6,7 +6,8 @@ type ApiErrorTypes =
   | "WRONG_PASSWORD"
   | "INVITE_CONSUMED"
   | "INVITE_NOT_EXISTS"
-  | "INSUFFICIENT_PRIVILEGES";
+  | "INSUFFICIENT_PRIVILEGES"
+  | "INVALID_JWT";
 
 export class ApiError extends Error {
   status: number;
@@ -41,5 +42,9 @@ export class ApiError extends Error {
 
   static InsufficientPrivileges() {
     return new ApiError(403, "INSUFFICIENT_PRIVILEGES");
+  }
+
+  static InvalidJWT() {
+    return new ApiError(401, "INVALID_JWT");
   }
 }

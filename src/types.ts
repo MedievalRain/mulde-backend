@@ -10,9 +10,3 @@ export type UserCredentials = {
 export interface AuthRequest extends Request {
   credentials?: UserCredentials;
 }
-
-export type Invite = {
-  id: string;
-  name: string;
-  createdAt: Date;
-};

@@ -1,6 +1,6 @@
 import { sql } from "../../config/database";
 import { ApiError } from "../../errors/ApiError";
-import { Invite } from "../../types";
+import { Invite } from "./adminTypes";
 
 export class AdminRepository {
   public async createInvite(name: string) {

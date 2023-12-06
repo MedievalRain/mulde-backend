@@ -11,7 +11,7 @@ export class AdminRepository {
   }
 
   public async deleteInvite(inviteId: string) {
-    const result = await sql`DELETE FROM invites where id=${inviteId} AND user_id=NULL`;
+    const result = await sql`DELETE FROM invites where id=${inviteId} AND user_id IS NULL`;
     if (result.count === 0) throw ApiError.InviteNotExist();
   }
 }

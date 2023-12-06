@@ -1,5 +1,6 @@
 import { sql } from "../../config/database";
 import { ApiError } from "../../errors/ApiError";
+import { Invite } from "../../types";
 
 export class AdminRepository {
   public async createInvite(name: string) {
@@ -13,5 +14,9 @@ export class AdminRepository {
   public async deleteInvite(inviteId: string) {
     const result = await sql`DELETE FROM invites where id=${inviteId} AND user_id IS NULL`;
     if (result.count === 0) throw ApiError.InviteNotExist();
+  }
+
+  public async getInvites(): Promise<Invite[]> {
+    return sql<Invite[]>`SELECT id,name,created_at FROM INVITES WHERE user_id IS NULL`;
   }
 }

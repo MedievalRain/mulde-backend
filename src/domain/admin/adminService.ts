@@ -25,6 +25,12 @@ class AdminService {
     const { inviteId } = parseDeleteInviteRequest(data);
     return this.adminRepository.deleteInvite(inviteId);
   }
+
+  public async getInvites(credentials: UserCredentials | undefined) {
+    if (!credentials) throw ApiError.InvalidJWT();
+    if (credentials.role !== "admin") throw ApiError.InsufficientPrivileges();
+    return this.adminRepository.getInvites();
+  }
 }
 
 export const adminService = new AdminService(new AdminRepository());

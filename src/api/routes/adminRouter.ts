@@ -37,4 +37,13 @@ adminRouter.delete("/invite", async (req: AuthRequest, res, next) => {
   }
 });
 
+adminRouter.get("/invite", async (req: AuthRequest, res, next) => {
+  try {
+    const invites = await adminService.getInvites(req.credentials);
+    res.status(200).json(invites);
+  } catch (error) {
+    next(error);
+  }
+});
+
 export { adminRouter };

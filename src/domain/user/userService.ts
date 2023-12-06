@@ -1,6 +1,6 @@
 import { randomUUID } from "crypto";
 import { ApiError } from "../../errors/ApiError";
-import { jwtService } from "../../utils/jwt";
+import { jwtService } from "../../utils/jwt/jwt";
 import { UserRepository } from "./userRepository";
 import { parseAuthRequest, parseRegisterRequest } from "./userValidations";
 import * as bcrypt from "bcrypt";

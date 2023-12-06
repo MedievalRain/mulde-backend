@@ -7,7 +7,8 @@ type ApiErrorTypes =
   | "INVITE_CONSUMED"
   | "INVITE_NOT_EXISTS"
   | "INSUFFICIENT_PRIVILEGES"
-  | "INVALID_JWT";
+  | "INVALID_JWT"
+  | "EXPIRED_SESSION";
 
 export class ApiError extends Error {
   status: number;
@@ -46,5 +47,9 @@ export class ApiError extends Error {
 
   static InvalidJWT() {
     return new ApiError(401, "INVALID_JWT");
+  }
+
+  static ExpiredSession() {
+    return new ApiError(401, "EXPIRED_SESSION");
   }
 }

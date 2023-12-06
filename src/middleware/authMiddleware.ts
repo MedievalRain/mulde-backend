@@ -7,7 +7,7 @@ import { errorMiddleware } from "./errorMiddleware";
 import { addMinutes } from "../utils/time";
 
 export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-  const { accessToken, refreshToken } = req.cookies.accessToken;
+  const { accessToken, refreshToken } = req.cookies;
   const authReq = req as AuthRequest;
   try {
     try {

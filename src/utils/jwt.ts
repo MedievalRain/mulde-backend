@@ -16,7 +16,7 @@ export class JwtService {
   key: string = getEnv("JWT_KEY");
 
   public generateAccessToken(userId: string, role: UserRole) {
-    const payload = {
+    const payload: UserPayload = {
       userId,
       role,
     };

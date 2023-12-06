@@ -1,4 +1,8 @@
-type ApiErrorTypes = "USER_EXISTS" | "VALIDATION" | "INTERNAL";
+type ApiErrorTypes =
+  | "USER_EXISTS"
+  | "VALIDATION"
+  | "INTERNAL"
+  | "USER_NOT_EXIST";
 
 export class ApiError extends Error {
   status: number;
@@ -12,6 +16,10 @@ export class ApiError extends Error {
 
   static UserExists() {
     return new ApiError(409, "USER_EXISTS");
+  }
+
+  static UserNotExist() {
+    return new ApiError(404, "USER_NOT_EXIST");
   }
   static Validation() {
     return new ApiError(400, "VALIDATION");

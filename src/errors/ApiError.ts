@@ -2,7 +2,8 @@ type ApiErrorTypes =
   | "USER_EXISTS"
   | "VALIDATION"
   | "INTERNAL"
-  | "USER_NOT_EXIST";
+  | "USER_NOT_EXIST"
+  | "WRONG_PASSWORD";
 
 export class ApiError extends Error {
   status: number;
@@ -23,5 +24,8 @@ export class ApiError extends Error {
   }
   static Validation() {
     return new ApiError(400, "VALIDATION");
+  }
+  static WrongPassword() {
+    return new ApiError(401, "WRONG_PASSWORD");
   }
 }

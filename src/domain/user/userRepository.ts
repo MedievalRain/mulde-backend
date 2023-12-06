@@ -1,5 +1,7 @@
 import { randomUUID } from "crypto";
 import { sql } from "../../config/database";
+import { User } from "./userTypes";
+import { ApiError } from "../../errors/ApiError";
 
 export class UserRepository {
   public async createUser(email: string, passwordHash: string, role: string) {
@@ -24,5 +26,34 @@ export class UserRepository {
         `;
       });
     } catch (error) {}
+  }
+
+  public async getUserByEmail(email: string) {
+    const result = await sql<User[]>`
+    SELECT u.id, u.email, u.password_hash, u.created_at,r.name, r.name as role FROM users u 
+    JOIN user_roles ur ON u.id=ur.user_id
+    JOIN roles r ON r.id=ur.role_id
+    WHERE u.email=${email} LIMIT 1`;
+    if (result.count === 0) throw ApiError.UserNotExist();
+    return result[0];
+  }
+
+  public async createSession(
+    sessionId: string,
+    userId: string,
+    expireAt: Date
+  ) {
+    try {
+      await sql`INSERT INTO sessions ${sql({
+        id: sessionId,
+        userId,
+        expireAt,
+      })}`;
+    } catch (error) {
+      if (error instanceof sql.PostgresError && error.code === "23503") {
+        throw ApiError.UserNotExist();
+      }
+      throw error;
+    }
   }
 }

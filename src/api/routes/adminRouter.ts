@@ -26,5 +26,15 @@ adminRouter.delete("/user", async (req: AuthRequest, res, next) => {
     next(error);
   }
 });
+adminRouter.delete("/invite", async (req: AuthRequest, res, next) => {
+  try {
+    await adminService.deleteInvite(req.query, req.credentials);
+    res.status(200).json({
+      message: "Invite deleted",
+    });
+  } catch (error) {
+    next(error);
+  }
+});
 
 export { adminRouter };

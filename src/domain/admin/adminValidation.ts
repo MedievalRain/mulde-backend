@@ -24,3 +24,15 @@ export const parseDeleteUserRequest = (data: unknown) => {
     throw ApiError.Validation();
   }
 };
+
+const deleteInviteRequestSchema = z.object({
+  inviteId: z.string().uuid(),
+});
+
+export const parseDeleteInviteRequest = (data: unknown) => {
+  try {
+    return deleteInviteRequestSchema.parse(data);
+  } catch {
+    throw ApiError.Validation();
+  }
+};

@@ -26,7 +26,7 @@ CREATE TABLE
 CREATE TABLE
     IF NOT EXISTS invites (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4 (),
-        name VARCHAR(255) NOT NULL UNIQUE,
+        name VARCHAR(255) NOT NULL,
         user_id UUID,
         FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
     );

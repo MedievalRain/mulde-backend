@@ -18,7 +18,7 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
       const authData = jwtService.parseRefreshToken(refreshToken);
       const result = await sql`
         SELECT 1 FROM sessions
-        WHERE id=${authData.sessionId} AND user_id=${authData.userId} AND expire_at<NOW()`;
+        WHERE id=${authData.sessionId} AND user_id=${authData.userId} AND expire_at>NOW()`;
       if (result.count === 0) throw ApiError.ExpiredSession();
       authReq.credentials = { ...authData, id: authData.userId };
       const newAccessToken = jwtService.generateAccessToken(authData.userId, authData.role);

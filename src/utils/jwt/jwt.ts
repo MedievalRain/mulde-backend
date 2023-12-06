@@ -16,11 +16,7 @@ export class JwtService {
     return this.generateJWT(payload, "15m");
   }
 
-  public generateRefreshToken(
-    sessionId: string,
-    userId: string,
-    role: UserRole
-  ) {
+  public generateRefreshToken(sessionId: string, userId: string, role: UserRole) {
     const payload: UserSessionPayload = {
       sessionId,
       userId,
@@ -41,6 +37,16 @@ export class JwtService {
       .object({
         userId: z.string(),
         role: z.enum(roles),
+      })
+      .parse(data);
+  }
+  public parseRefreshToken(token: string): UserSessionPayload {
+    const data = this.verify(token);
+    return z
+      .object({
+        userId: z.string(),
+        role: z.enum(roles),
+        sessionId: z.string().uuid(),
       })
       .parse(data);
   }

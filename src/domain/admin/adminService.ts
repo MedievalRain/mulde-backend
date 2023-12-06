@@ -1,7 +1,12 @@
 import { ApiError } from "../../errors/ApiError";
 import { UserCredentials } from "../../types";
 import { AdminRepository } from "./adminRepository";
-import { parseCreateInviteRequest, parseDeleteInviteRequest, parseDeleteUserRequest } from "./adminValidation";
+import {
+  parseCreateInviteRequest,
+  parseDeleteInviteRequest,
+  parseDeleteUserRequest,
+  parseRenameInviteRequest,
+} from "./adminValidation";
 
 class AdminService {
   constructor(private adminRepository: AdminRepository) {}
@@ -30,6 +35,13 @@ class AdminService {
     if (!credentials) throw ApiError.InvalidJWT();
     if (credentials.role !== "admin") throw ApiError.InsufficientPrivileges();
     return this.adminRepository.getInvites();
+  }
+
+  public async renameInvite(data: unknown, credentials: UserCredentials | undefined) {
+    if (!credentials) throw ApiError.InvalidJWT();
+    if (credentials.role !== "admin") throw ApiError.InsufficientPrivileges();
+    const { name, inviteId } = parseRenameInviteRequest(data);
+    return this.adminRepository.renameInvite(inviteId, name);
   }
 }
 

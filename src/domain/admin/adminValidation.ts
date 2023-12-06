@@ -36,3 +36,16 @@ export const parseDeleteInviteRequest = (data: unknown) => {
     throw ApiError.Validation();
   }
 };
+
+const renameInviteRequestSchema = z.object({
+  inviteId: z.string().uuid(),
+  name: z.string(),
+});
+
+export const parseRenameInviteRequest = (data: unknown) => {
+  try {
+    return renameInviteRequestSchema.parse(data);
+  } catch {
+    throw ApiError.Validation();
+  }
+};

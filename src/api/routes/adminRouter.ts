@@ -46,4 +46,15 @@ adminRouter.get("/invite", async (req: AuthRequest, res, next) => {
   }
 });
 
+adminRouter.post("/invite/rename", async (req: AuthRequest, res, next) => {
+  try {
+    await adminService.renameInvite(req.body, req.credentials);
+    res.status(200).json({
+      message: "Invite renamed",
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 export { adminRouter };

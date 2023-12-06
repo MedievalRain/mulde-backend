@@ -19,4 +19,8 @@ export class AdminRepository {
   public async getInvites(): Promise<Invite[]> {
     return sql<Invite[]>`SELECT id,name,created_at FROM INVITES WHERE user_id IS NULL`;
   }
+  public async renameInvite(inviteId: string, name: string) {
+    const result = await sql`UPDATE invites SET name=${name} WHERE id=${inviteId}`;
+    if (result.count === 0) throw ApiError.InviteNotExist();
+  }
 }

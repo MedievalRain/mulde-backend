@@ -3,7 +3,9 @@ type ApiErrorTypes =
   | "VALIDATION"
   | "INTERNAL"
   | "USER_NOT_EXIST"
-  | "WRONG_PASSWORD";
+  | "WRONG_PASSWORD"
+  | "INVITE_CONSUMED"
+  | "INVITE_NOT_EXISTS";
 
 export class ApiError extends Error {
   status: number;
@@ -27,5 +29,12 @@ export class ApiError extends Error {
   }
   static WrongPassword() {
     return new ApiError(401, "WRONG_PASSWORD");
+  }
+  static InviteConsumed() {
+    return new ApiError(403, "INVITE_CONSUMED");
+  }
+
+  static InviteNotExist() {
+    return new ApiError(404, "INVITE_NOT_EXISTS");
   }
 }

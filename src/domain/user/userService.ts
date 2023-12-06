@@ -2,16 +2,21 @@ import { randomUUID } from "crypto";
 import { ApiError } from "../../errors/ApiError";
 import { jwtService } from "../../utils/jwt";
 import { UserRepository } from "./userRepository";
-import { parseAuthRequest } from "./userValidations";
+import { parseAuthRequest, parseRegisterRequest } from "./userValidations";
 import * as bcrypt from "bcrypt";
 
 class UserService {
   constructor(private userRepository: UserRepository) {}
 
   public async register(data: unknown) {
-    const { email, password } = parseAuthRequest(data);
+    const { email, password, inviteId } = parseRegisterRequest(data);
     const passwordHash = await bcrypt.hash(password, 10);
-    return this.userRepository.createUser(email, passwordHash, "user");
+    return this.userRepository.createUser(
+      email,
+      passwordHash,
+      "user",
+      inviteId
+    );
   }
 
   public async login(data: unknown) {

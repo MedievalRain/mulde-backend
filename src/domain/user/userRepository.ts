@@ -4,7 +4,12 @@ import { User } from "./userTypes";
 import { ApiError } from "../../errors/ApiError";
 
 export class UserRepository {
-  public async createUser(email: string, passwordHash: string, role: string) {
+  public async createUser(
+    email: string,
+    passwordHash: string,
+    role: string,
+    inviteId: string
+  ) {
     try {
       await sql.begin(async (sql) => {
         const userId = randomUUID();
@@ -13,6 +18,12 @@ export class UserRepository {
           email,
           passwordHash,
         })}`;
+        const inviteResult = await sql<
+          { userId: string | null }[]
+        >`SELECT userId FROM invites WHERE id=${inviteId}`;
+        if (inviteResult.count === 0) throw ApiError.InviteNotExist();
+        if (inviteResult[0].userId) throw ApiError.InviteConsumed();
+        await sql`UPDATE invites SET user_id=${userId} WHERE id=${inviteId}`;
         await sql`
           INSERT INTO
               user_roles (user_id, role_id)

@@ -23,7 +23,6 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@mulde/mulde-shared-types": "github:MedievalRain/mulde-shared-types",
     "@types/bcrypt": "^5.0.2",
     "@types/cookie-parser": "^1.4.6",
     "@types/cors": "^2.8.17",

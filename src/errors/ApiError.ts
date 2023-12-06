@@ -5,7 +5,8 @@ type ApiErrorTypes =
   | "USER_NOT_EXIST"
   | "WRONG_PASSWORD"
   | "INVITE_CONSUMED"
-  | "INVITE_NOT_EXISTS";
+  | "INVITE_NOT_EXISTS"
+  | "INSUFFICIENT_PRIVILEGES";
 
 export class ApiError extends Error {
   status: number;
@@ -36,5 +37,9 @@ export class ApiError extends Error {
 
   static InviteNotExist() {
     return new ApiError(404, "INVITE_NOT_EXISTS");
+  }
+
+  static InsufficientPrivileges() {
+    return new ApiError(403, "INSUFFICIENT_PRIVILEGES");
   }
 }

@@ -1,16 +1,9 @@
 import jwt from "jsonwebtoken";
-import { UserRole } from "../domain/user/userTypes";
-import { getEnv } from "./env";
-
-type UserPayload = {
-  userId: string;
-  role: UserRole;
-};
-type UserSessionPayload = {
-  userId: string;
-  role: UserRole;
-  sessionId: string;
-};
+import { getEnv } from "../env";
+import { UserRole, roles } from "../../types";
+import { UserPayload, UserSessionPayload } from "./jwtTypes";
+import { ApiError } from "../../errors/ApiError";
+import z from "zod";
 
 export class JwtService {
   key: string = getEnv("JWT_KEY");
@@ -40,6 +33,26 @@ export class JwtService {
     return jwt.sign(payload, this.key, {
       expiresIn: expiresIn,
     });
+  }
+
+  public parseAccessToken(token: string): UserPayload {
+    const data = this.verify(token);
+    return z
+      .object({
+        userId: z.string(),
+        role: z.enum(roles),
+      })
+      .parse(data);
+  }
+
+  private verify(token: string) {
+    try {
+      const data = jwt.verify(token, this.key);
+      if (typeof data === "string") throw ApiError.InvalidJWT();
+      return data;
+    } catch {
+      throw ApiError.InvalidJWT();
+    }
   }
 }
 

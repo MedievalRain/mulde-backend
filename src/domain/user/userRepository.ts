@@ -2,29 +2,27 @@ import { randomUUID } from "crypto";
 import { sql } from "../../config/database";
 import { User } from "./userTypes";
 import { ApiError } from "../../errors/ApiError";
+import { PostgresError } from "postgres";
 
 export class UserRepository {
-  public async createUser(
-    email: string,
-    passwordHash: string,
-    role: string,
-    inviteId: string
-  ) {
-    try {
-      await sql.begin(async (sql) => {
-        const userId = randomUUID();
+  public async createUser(email: string, passwordHash: string, role: string, inviteId: string) {
+    await sql.begin(async (sql) => {
+      const userId = randomUUID();
+      try {
         await sql`INSERT INTO users ${sql({
           id: userId,
           email,
           passwordHash,
         })}`;
-        const inviteResult = await sql<
-          { userId: string | null }[]
-        >`SELECT userId FROM invites WHERE id=${inviteId}`;
-        if (inviteResult.count === 0) throw ApiError.InviteNotExist();
-        if (inviteResult[0].userId) throw ApiError.InviteConsumed();
-        await sql`UPDATE invites SET user_id=${userId} WHERE id=${inviteId}`;
-        await sql`
+      } catch (error) {
+        if (error instanceof PostgresError && error.code === "23505") throw ApiError.UserExists();
+      }
+
+      const inviteResult = await sql<{ userId: string | null }[]>`SELECT user_id FROM invites WHERE id=${inviteId}`;
+      if (inviteResult.count === 0) throw ApiError.InviteNotExist();
+      if (inviteResult[0].userId) throw ApiError.InviteConsumed();
+      await sql`UPDATE invites SET user_id=${userId} WHERE id=${inviteId}`;
+      await sql`
           INSERT INTO
               user_roles (user_id, role_id)
           SELECT
@@ -35,8 +33,7 @@ export class UserRepository {
           WHERE
               roles.name = ${role};
         `;
-      });
-    } catch (error) {}
+    });
   }
 
   public async getUserByEmail(email: string) {
@@ -49,11 +46,7 @@ export class UserRepository {
     return result[0];
   }
 
-  public async createSession(
-    sessionId: string,
-    userId: string,
-    expireAt: Date
-  ) {
+  public async createSession(sessionId: string, userId: string, expireAt: Date) {
     try {
       await sql`INSERT INTO sessions ${sql({
         id: sessionId,
@@ -61,7 +54,7 @@ export class UserRepository {
         expireAt,
       })}`;
     } catch (error) {
-      if (error instanceof sql.PostgresError && error.code === "23503") {
+      if (error instanceof PostgresError && error.code === "23503") {
         throw ApiError.UserNotExist();
       }
       throw error;
